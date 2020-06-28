@@ -48,7 +48,7 @@ class Minerstat(entity.Entity):
         with urllib.request.urlopen(req) as url:
             data = json.loads(url.read().decode())
 
-            self._state = data[self._config[CONF_RIG_NAME]]['mining']['revenue']['usd_month']
+            self._state = data[self._config[CONF_RIG_NAME]]['revenue']['usd_month']
             self._unit = 'usd'
 
     @property
