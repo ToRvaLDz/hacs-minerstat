@@ -10,17 +10,19 @@ __version__ = '1.0.0'
 CONF_NAME = 'name'
 CONF_ACCESS_KEY = 'access_key'
 CONF_RIG_NAME = 'rig_name'
-CONF_BASE_CURRENCY = 'EUR'
+CONF_BASE_CURRENCY = 'base_currency'
 
 DEFAULT_NAME = 'Minerstat'
+DEFAULT_CURRENCY = 'USD'
 DEFAULT_SCAN_INTERVAL = timedelta(minutes=15)
 SCAN_INTERVAL = timedelta(minutes=15)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+    vol.Optional(CONF_BASE_CURRENCY, default=DEFAULT_CURRENCY): cv.string,
     vol.Required(CONF_ACCESS_KEY): str,
     vol.Required(CONF_RIG_NAME): str,
-    vol.Required(CONF_BASE_CURRENCY): str
+   
 })
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
