@@ -22,7 +22,7 @@ sensor:
 |`platform`|string|**Required**|`hacs-minerstat`|The platform name|
 |`access_key`|string|**Required**||Your personal access key from https://my.minerstat.com/|
 |`rig_name`|string|**Required**||The name that you defined for your rig at Minerstat|
-|`base_currency`|string|Optional*||The base currency for showing profit|
+|`base_currency`|string|Optional||The base currency for showing profit|
 |`name`|string|Optional|`Minerstat`|Custom name for the sensor|
 
 
