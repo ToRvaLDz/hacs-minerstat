@@ -84,6 +84,8 @@ class Minerstat(entity.Entity):
         else:
             self._state = (self._revenue / self._exchange) - (self._powercons / 1000 * self._powercost * 24)
 
+        self._state = round(self._state, 3)
+
     @property
     def device_state_attributes(self):
         return {
