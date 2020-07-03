@@ -11,15 +11,18 @@ CONF_NAME = 'name'
 CONF_ACCESS_KEY = 'access_key'
 CONF_RIG_NAME = 'rig_name'
 CONF_BASE_CURRENCY = 'base_currency'
+CONF_REVENUE = 'revenue'
 
 DEFAULT_NAME = 'Minerstat'
 DEFAULT_CURRENCY = 'USD'
+DEFAULT_REVENUE = 'usd_month'
 DEFAULT_SCAN_INTERVAL = timedelta(minutes=15)
 SCAN_INTERVAL = timedelta(minutes=15)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
     vol.Optional(CONF_BASE_CURRENCY, default=DEFAULT_CURRENCY): cv.string,
+    vol.Optional(CONF_REVENUE, default=DEFAULT_REVENUE): cv.string,
     vol.Required(CONF_ACCESS_KEY): str,
     vol.Required(CONF_RIG_NAME): str,
 
@@ -36,7 +39,7 @@ class Minerstat(entity.Entity):
         self._config = config
         self._state = None
         self._unit = None
-        self._usd = None
+        self._revenue = None
         self._powercost = None
         self._powercons = None
         self._exchange = 1
@@ -55,26 +58,26 @@ class Minerstat(entity.Entity):
         return self._state
 
     def update(self):
-        self._unit = self._config[CONF_BASE_CURRENCY]
+        self._unit = self._config[CONF_BASE_CURRENCY].upper()
 
         req = urllib.request.Request(
             f'https://api.minerstat.com/v2/stats/{self._config[CONF_ACCESS_KEY]}/{self._config[CONF_RIG_NAME]}',
             headers={'User-Agent': "Home-assistant.io"})
         with urllib.request.urlopen(req) as url:
             data = json.loads(url.read().decode())
-            self._usd = data[self._config[CONF_RIG_NAME]]['revenue']['usd_month']
+            self._revenue = data[self._config[CONF_RIG_NAME]]['revenue'][self._config[CONF_REVENUE]]
             self._powercost = data[self._config[CONF_RIG_NAME]]['info']['electricity']
             self._powercons = data[self._config[CONF_RIG_NAME]]['info']['consumption']
 
         if self._config[CONF_BASE_CURRENCY] != 'USD':
             req = urllib.request.Request(
-                f'https://api.exchangeratesapi.io/latest?base={self._config[CONF_BASE_CURRENCY]}&symbols=USD',
+                f'https://api.exchangeratesapi.io/latest?base={self._unit}&symbols=USD',
                 headers={'User-Agent': "Home-assistant.io"})
             with urllib.request.urlopen(req) as url:
                 data = json.loads(url.read().decode())
                 self._exchange = data['rates']['USD']
 
-        self._state = (self._usd * self._exchange) - (self._powercons / 1000 * self._powercost * 24 * 30)
+        self._state = (self._revenue * self._exchange) - (self._powercons / 1000 * self._powercost * 24 * 30)
 
     @property
     def device_state_attributes(self):
