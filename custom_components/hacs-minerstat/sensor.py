@@ -74,7 +74,7 @@ class Minerstat(entity.Entity):
                 data = json.loads(url.read().decode())
                 self._exchange = data['rates']['USD']
 
-        self._state = (self._usd / self._exchange) - (self._powercons / 1000 * self._powercost * 24 * 30)
+        self._state = (self._usd * self._exchange) - (self._powercons / 1000 * self._powercost * 24 * 30)
 
     @property
     def device_state_attributes(self):
