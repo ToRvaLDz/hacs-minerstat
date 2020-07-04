@@ -16,8 +16,8 @@ CONF_REVENUE = 'revenue'
 DEFAULT_NAME = 'Minerstat'
 DEFAULT_CURRENCY = 'USD'
 DEFAULT_REVENUE = 'usd_month'
-DEFAULT_SCAN_INTERVAL = timedelta(minutes=15)
-SCAN_INTERVAL = timedelta(minutes=15)
+DEFAULT_SCAN_INTERVAL = timedelta(minutes=1)
+SCAN_INTERVAL = timedelta(minutes=1)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
